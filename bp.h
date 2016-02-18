@@ -7,20 +7,26 @@
 
 typedef struct {
 	Matrix *matrix;
-	Value *nodes;
-	Value *values;
-	Value *deltas;
 	Value learning_rate;
+
+	// Forward weights
+	Value *nodes;
+
+	// Input values
+	Value *values;
+
+	// Delta values
+	Value *deltas;
 } Bp;
 
 Bp bp_new(Pool *pool, Matrix *matrix, Value learning_rate) {
 	assert(2 <= matrix->size);
 	Bp self = {
 		matrix,
+		learning_rate,
 		(Value*)malloc(sizeof(Value) * matrix->conns.sum),
 		(Value*)pool_alloc(pool, sizeof(Value) * matrix->nodes.sum),
 		(Value*)pool_alloc(pool, sizeof(Value) * matrix->nodes.sum),
-		learning_rate,
 	};
 	for (int i = 0; i < matrix->conns.sum; i++) {
 		self.nodes[i] = 1;
